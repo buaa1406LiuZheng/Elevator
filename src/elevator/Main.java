@@ -13,13 +13,15 @@ public class Main {
 		int count=0,valid=0;
 		
 		while(true){	
+			
+			String s = in.nextLine();
+			if(s.equals("done")||count==100){
+				break;
+			}		
+			
+			count++;	
 			try{
-				String s = in.nextLine();
-				if(s.equals("done")||count==100){
-					break;
-				}				
-				count++;			
-				rq.addRequest(new Request(s));
+				rq.initialRequest(new Request(s));
 				valid++;
 			}
 			catch (IncorrectInputFormatException e){
@@ -40,20 +42,20 @@ public class Main {
 		}
 		in.close();
 		
-		int validDispatch = 0;
 		if(valid==0){
 			System.out.println("no valid request or wrong request time");
 		}
 		else{
-			try{
-				Elevator elevt = new Elevator();
-				Dispatcher dispatcher = new Dispatcher(elevt, rq);
-				validDispatch = dispatcher.Dispatch();
+			Elevator elevt = new Elevator();
+			ALSDispatcher dispatcher = new ALSDispatcher(elevt, rq);
+			dispatcher.Dispatch();
+			/*try{
+				dispatcher.Dispatch();
 			}catch(Throwable t){
 				System.out.println("Other Exception");
-			}
+			}*/
 		}
-		System.out.println(String.valueOf(validDispatch)+" valid dispatch(es)");
+		System.out.println("Dispatch end");
 		
 		return;
 	}

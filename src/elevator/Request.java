@@ -5,10 +5,10 @@ enum Direction{UP,DOWN,STEADY,UNKNOWN};
 
 class Request {
 		
-	private Type type;
-	private Floor floor;
-	private Direction direction;
-	private int time;
+	private final Type type;
+	private final int floor;
+	private final Direction direction;
+	private final int time;
 	
 	public Request(String r) throws IncorrectInputFormatException{
 		
@@ -17,13 +17,12 @@ class Request {
 				 +"|(\\(ER,([1-9]|10),[0-9]{1,8}\\))";
 		 if(!r.matches(pattern)){
 			 //wrong!!
-			 //System.out.println("wrong input format");
 			 throw new IncorrectInputFormatException("wrong input format");
 		 }
 		 
 		 String[] info = r.split("[(,)]");
 
-		 floor = new Floor(Integer.valueOf(info[2]));
+		 floor = Integer.valueOf(info[2]);
 		 /*if (floor<=0 || floor>10){
 			 //wrong!!
 			 System.out.println("floor out of range");
@@ -40,9 +39,9 @@ class Request {
 			 time = Integer.valueOf(info[3]);
 		 }
 		 
-		 if( type == Type.FR && !floor.isCorrectFR(direction)){
+		 if( type == Type.FR && 
+				 (floor==1 && direction==Direction.DOWN)||(floor==10&&direction==Direction.UP)){
 			 //wrong!!
-			 //System.out.println("direction invalid");
 			 throw new IncorrectInputFormatException("direction invalid");
 		 }
 	}
@@ -51,7 +50,35 @@ class Request {
 		return time;
 	}
 	
-	public Floor getFloor() {
+	public int getFloor() {
 		return floor;	
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
+	public Direction getDirection() {
+		return direction;
+	}
+	
+	@Override
+	public String toString(){
+		if(type==Type.FR){
+			return "(FR,"+String.valueOf(floor)+","+direction+","+String.valueOf(time)+")";
+		}
+		else{
+			return "(ER,"+String.valueOf(floor)+","+String.valueOf(time)+")";
+		}
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Request){
+			Request r = (Request)o;
+			return (r.type==type && r.floor==floor && 
+					r.direction==direction && r.time==time);
+		}
+		return false;
 	}
 }
